@@ -22,10 +22,10 @@ require 'action_controller'
 require 'action_controller/test_case'
 require 'action_controller/test_process'
 
-class ApplicationController < ActionController::Base; end
-
 $:.unshift File.expand_path(File.dirname(__FILE__) + '/../lib')
 require 'has_scope'
+
+class ApplicationController < ActionController::Base; end
 
 ActionController::Routing::Routes.draw do |map|
   map.connect ':controller/:action/:id'
