@@ -11,6 +11,7 @@ class TreesController < ApplicationController
   has_scope :calculate_height, :default => proc {|c| c.session[:height] || 20 }, :only => :new
   has_scope :paginate, :type => :hash
   has_scope :categories, :type => :array
+  has_scope :branches, :type => :range
 
   has_scope :only_short, :type => :boolean do |controller, scope|
     scope.only_really_short!(controller.object_id)
@@ -149,6 +150,15 @@ class HasScopeTest < ActionController::TestCase
     get :index, :categories => array
     assert_equal([mock_tree], assigns(:trees))
     assert_equal({ :categories => array }, current_scopes)
+  end
+
+  def test_scope_of_type_range
+    range = 50..100
+    Tree.expects(:branches).with(range).returns(Tree)
+    Tree.expects(:all).returns([mock_tree])
+    get :index, :branches => range
+    assert_equal([mock_tree], assigns(:trees))
+    assert_equal({ :branches => range }, current_scopes)
   end
 
   def test_invalid_type_hash_for_default_type_scope

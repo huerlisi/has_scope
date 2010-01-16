@@ -4,6 +4,7 @@ module HasScope
   ALLOWED_TYPES = {
     :array   => [ Array ],
     :hash    => [ Hash ],
+    :range   => [ Range ],
     :boolean => [ Object ],
     :default => [ String, Numeric ]
   }
@@ -26,7 +27,7 @@ module HasScope
     # * <tt>:type</tt> - Checks the type of the parameter sent. If set to :boolean
     #                    it just calls the named scope, without any argument. By default,
     #                    it does not allow hashes or arrays to be given, except if type
-    #                    :hash or :array are set.
+    #                    :hash, :array or :range are set.
     #
     # * <tt>:only</tt> - In which actions the scope is applied. By default is :all.
     #
