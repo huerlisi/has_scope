@@ -119,6 +119,9 @@ module HasScope
   def set_current_scope(type, key, value) #:nodoc:
     if type == :boolean
       current_scopes[key] = TRUE_VALUES.include?(value)
+    elsif type == :range and value.is_a? String
+      from, to = value.split('..')
+      current_scopes[key] = from..to
     elsif ALLOWED_TYPES[type].none?{ |klass| value.is_a?(klass) }
       raise "Expected type :#{type} in params[:#{key}], got :#{value.class}"
     else

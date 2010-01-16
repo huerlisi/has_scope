@@ -161,6 +161,15 @@ class HasScopeTest < ActionController::TestCase
     assert_equal({ :branches => range }, current_scopes)
   end
 
+  def test_scope_of_type_range_as_string
+    range = "50".."100"
+    Tree.expects(:branches).with(range).returns(Tree)
+    Tree.expects(:all).returns([mock_tree])
+    get :index, :branches => range.to_s
+    assert_equal([mock_tree], assigns(:trees))
+    assert_equal({ :branches => range }, current_scopes)
+  end
+
   def test_invalid_type_hash_for_default_type_scope
     assert_raise RuntimeError do
       get :index, :color => { :blue => :red }
