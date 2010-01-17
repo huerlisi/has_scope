@@ -47,6 +47,8 @@ module HasScope
     #
     # * <tt>:allow_blank</tt> - Blank values are not sent to scopes by default. Set to true to overwrite.
     #
+    # * <tt>:session</tt> - Saves scope value to session and loads from there.
+    #
     # == Block usage
     #
     # has_scope also accepts a block. The controller, current scope and value are yielded
@@ -69,7 +71,7 @@ module HasScope
         options[:type] ||= :boolean
         ActiveSupport::Deprecation.warn(":boolean => true is deprecated, use :type => :boolean instead", caller)
       end
-      options.assert_valid_keys(:type, :only, :except, :if, :unless, :default, :as, :allow_blank)
+      options.assert_valid_keys(:type, :only, :except, :if, :unless, :default, :as, :allow_blank, :session)
 
       options[:only]   = Array(options[:only])
       options[:except] = Array(options[:except])
@@ -101,6 +103,11 @@ module HasScope
 
       if params.key?(key)
         value, call_scope = params[key], true
+        if options[:session]
+          session[options[:session]] = {key => value}
+        end
+      elsif session['has_scope'] && session['has_scope'].key?(key)
+        value, call_scope = session['has_scope'][key], true
       elsif options.key?(:default)
         value, call_scope = options[:default], true
         value = value.call(self) if value.is_a?(Proc)
